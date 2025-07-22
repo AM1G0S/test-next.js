@@ -1,1 +1,0 @@
-export { ProfileFooter } from './ui';

@@ -1,7 +1,7 @@
+import { ProfileSchema, Profile } from "@/entities/profile/model/types";
 import axios from "axios";
-import { Profile, ProfileSchema } from "@/entities/profile/model/types";
 
-const fallback: Profile = {
+const mockedProfile: Profile = {
   id: "mock-id",
   username: "Ваня Петькин",
   city: "Краснодар",
@@ -11,22 +11,13 @@ const fallback: Profile = {
   avatar: null,
   description: "Я профессиональный скуф, обожаю сидеть дома...",
   telegram: "@ribakit3",
-  tags: []
+  tags: ["tag1", "tag2"]
 };
 
 export const getProfile = async (): Promise<Profile> => {
   try {
-    const res = await axios.get(
-      "https://igroom.ru/api/v2/profile/5e800be0-088e-41cb-b549-10ebf4a13591",
-      {
-        headers: {
-          Origin: "http://host.docker.internal:3000"
-        }
-      }
-    );
-    
+    const res = await axios.get("https://igroom.ru/api/v2/profile/5e800be0-088e-41cb-b549-10ebf4a13591");
     const raw = res.data.data;
-    
     return ProfileSchema.parse({
       id: raw.id,
       username: raw.name,
@@ -39,8 +30,8 @@ export const getProfile = async (): Promise<Profile> => {
       telegram: raw.telegram,
       tags: []
     });
-  } catch (err) {
-    console.warn("⚠️ API не сработал, возвращаю моки:", err);
-    return fallback;
+  } catch (e) {
+    console.warn("⚠️ API не работает, используем моки");
+    return mockedProfile;
   }
 };
